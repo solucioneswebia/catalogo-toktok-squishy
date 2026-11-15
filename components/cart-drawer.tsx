@@ -40,7 +40,7 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
       '',
       'Quedo atento/a para confirmar mi pedido. 💛',
     ].join('\n')
-    return `https://wa.me/${3102306513}?text=${encodeURIComponent(message)}`
+    return `https://wa.me/${WHATSAPP_NUMBER }?text=${encodeURIComponent(message)}`
   }, [details, items, total])
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
           <div className="order-fields">
             <label>Nombre<input value={details.name} onChange={(event) => setDetails({ ...details, name: event.target.value })} placeholder="¿Cómo te llamas?" /></label>
             <label>WhatsApp<input type="tel" value={details.phone} onChange={(event) => setDetails({ ...details, phone: event.target.value })} placeholder="Tu número de contacto" /></label>
-            <div className="order-field-row"><label>Tipo de entrega<select value={details.delivery} onChange={(event) => setDetails({ ...details, delivery: event.target.value })}><option>Delivery</option><option>Recoger en tienda</option></select></label><label>Ciudad<input value={details.city} onChange={(event) => setDetails({ ...details, city: event.target.value })} placeholder="Ciudad" /></label></div>
+            <div className="order-field-row"><label>Tipo de entrega<select value={details.delivery} onChange={(event) => setDetails({ ...details, delivery: event.target.value })}><option>Entrega a domicilio</option><option>Recoger en tienda</option></select></label><label>Ciudad<input value={details.city} onChange={(event) => setDetails({ ...details, city: event.target.value })} placeholder="Ciudad" /></label></div>
             <label>Dirección<input value={details.address} onChange={(event) => setDetails({ ...details, address: event.target.value })} placeholder="Dirección de entrega" /></label>
             <label>Observaciones<textarea value={details.notes} onChange={(event) => setDetails({ ...details, notes: event.target.value })} placeholder="¿Algún detalle que debamos saber?" rows={2} /></label>
           </div>
