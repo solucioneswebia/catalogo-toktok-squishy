@@ -3,18 +3,49 @@
 import { useMemo, useState } from 'react'
 import { Grid2X2, List, Search, ShoppingBag, Heart, Sparkles, X } from 'lucide-react'
 
-type Category = 'Squishy' | 'Sorpresas' | 'Papelería' | 'Accesorios'
-type Product = { name: string; price: string; category: Category; badge?: string; art: number }
+type Category = 'Squishy' | 'Sorpresas' | 'Papelería' | 'Accesorios' | 'Slime'
+type Product = { name: string; price: string; category: Category; badge?: string; image: string }
 
 const products: Product[] = [
-  { name: 'Dumpling Squishy', price: '$29.900', category: 'Squishy', badge: 'Más vendido', art: 0 },
-  { name: 'Osito Sorpresa', price: '$24.900', category: 'Sorpresas', badge: 'Favorito', art: 1 },
-  { name: 'Set de Stickers Kawaii', price: '$14.900', category: 'Papelería', badge: 'Nuevo', art: 2 },
-  { name: 'Lapicero Cute', price: '$9.900', category: 'Papelería', art: 3 },
-  { name: 'Llavero Corazón', price: '$12.900', category: 'Accesorios', art: 4 },
-  { name: 'Mini Libreta Kawaii', price: '$18.900', category: 'Papelería', badge: 'Nuevo', art: 5 },
-  { name: 'Squishy Panda', price: '$27.900', category: 'Squishy', art: 6 },
-  { name: 'Pulsera Cute', price: '$15.900', category: 'Accesorios', art: 7 },
+  { name: 'Dumpling Squishy Pequeño', price: '$10.000', category: 'Squishy', badge: 'Más vendido', image: '/productos/squishy-pequeno.jpg' },
+  { name: 'Dumpling Squishy Grande', price: '$20.000', category: 'Squishy', badge: 'Más vendido', image: '/productos/squishy-grande.jpg' },
+  { name: 'Sorpresa Panda', price: '$20.000', category: 'Sorpresas', badge: 'Favorito', image: '/productos/sorpresa-panda.jpg' },
+  { name: 'Sorpresa Hello Kitty', price: '$20.000', category: 'Sorpresas', badge: 'Favorito', image: '/productos/sorpresa-hello-kitty.jpg' },
+  { name: 'Sorpresa Melody', price: '$20.000', category: 'Sorpresas', badge: 'Favorito', image: '/productos/sorpresa-melody.jpg' },
+  { name: 'Sorpresa Kuromi', price: '$20.000', category: 'Sorpresas', badge: 'Favorito', image: '/productos/sorpresa-kuromi1.jpg' },
+  { name: 'Sorpresa Pokemon', price: '$20.000', category: 'Sorpresas', badge: 'Favorito', image: '/productos/sorpresa-pokemon.jpg' },
+  { name: 'Caja Sorpresa Disney Zootopia', price: '$25.000', category: 'Sorpresas', badge: 'Favorito', image: '/productos/zootopia.jpg' },
+  { name: 'Esfero de Peluche Kuromi', price: '$12.000', category: 'Papelería', image: '/productos/esfero-peluche-kuromi.jpg' },
+  { name: 'Esfero de Peluche Capibara', price: '$12.000', category: 'Papelería', image: '/productos/esfero-peluche-capibara.jpg' },
+  { name: 'Esfero de Peluche Fresa', price: '$12.000', category: 'Papelería', image: '/productos/esfero-peluche-fresa.jpg' },
+  { name: 'kit de manualidades Pizza', price: '$12.900', category: 'Accesorios', image: '/productos/pizza.jpg' },
+  { name: 'kit de manualidades Ramen Fideos', price: '$12.900', category: 'Accesorios', image: '/productos/fideos.jpg' },
+  { name: 'kit de manualidades Arroz con Tortilla de Huevo y Curry', price: '$12.900', category: 'Accesorios', image: '/productos/curry.jpg' },
+  { name: 'Slime esponjoso Kuromi Rosa', price: '$27.900', category: 'Slime', image: '/productos/slime-kuromi.jpg' },
+  { name: 'Slime esponjoso Kuromi Morado', price: '$27.900', category: 'Slime', image: '/productos/slime-kuromi-morado.jpg' },
+  { name: 'Slime antiestrés Verde Cristal', price: '$27.900', category: 'Slime', image: '/productos/slime-cristal-verde.jpg' },
+  { name: 'Slime esponjoso verde/morado', price: '$27.900', category: 'Slime', image: '/productos/slime-verde-morado.jpg' },
+  { name: 'Slime esponjoso amarillo/rojo', price: '$27.900', category: 'Slime', image: '/productos/slime-amarillo-rojo.jpg' },
+  { name: 'Slime Hello Kitty amarillo', price: '$27.900', category: 'Slime', image: '/productos/slime-amarillo.jpg' },
+  { name: 'Bote Slime Hello Kitty azul/blanco', price: '$27.900', category: 'Slime', image: '/productos/bote-slime-hello-kitty.jpg' },
+  { name: 'Bote Slime Hello Kitty rojo/blanco', price: '$27.900', category: 'Slime', image: '/productos/bote-slime-hello-kitty-rojo.jpg' },
+  { name: 'Slime Melody Rosa', price: '$27.900', category: 'Slime', image: '/productos/slime-melody.jpg' },
+  { name: 'Slime esponjoso blanco/morado', price: '$27.900', category: 'Slime', image: '/productos/slime-esponjoso-blanco-morado.jpg' },
+  { name: 'Esfero Patita Gato Rosa', price: '$12.000', category: 'Papelería', image: '/productos/esfero-rosa.jpg' },
+  { name: 'Stikes Panda', price: '$12.000', category: 'Papelería', image: '/productos/stikes-panda.jpg' },
+  { name: 'Stikes Capibara', price: '$12.000', category: 'Papelería', image: '/productos/stikes-capibara.jpg' },
+  { name: 'Stikes Kuromi', price: '$12.000', category: 'Papelería', image: '/productos/stikes-kuromi.jpg' },
+  { name: 'Cuaderno Stikes', price: '$17.000', category: 'Papelería', image: '/productos/cuaderno-stikes.jpg' },
+  { name: 'Esfero Patita Gato Amarillo', price: '$12.000', category: 'Papelería', image: '/productos/esfero-amarillo.jpg' },
+  { name: 'Cajita Borradores', price: '$12.000', category: 'Papelería', image: '/productos/borradores.jpg' },
+  { name: 'Kit Borradores Capibara', price: '$12.000', category: 'Papelería', image: '/productos/kit-borrador-capibara.jpg' },
+  { name: 'Kit Resaltadores Capibara', price: '$17.000', category: 'Papelería', image: '/productos/kit-resaltadores.jpg' },
+  { name: 'Borrador Botella Amarillo', price: '$12.000', category: 'Papelería', image: '/productos/botella-amarillo.jpg' },
+  { name: 'Borrador Botella Naranja', price: '$12.000', category: 'Papelería', image: '/productos/botella-naranja.jpg' },
+  { name: 'Borrador Botella Rojo', price: '$12.000', category: 'Papelería', image: '/productos/botella-rojo.jpg' },
+  { name: 'Borrador Botella Verde', price: '$12.000', category: 'Papelería', image: '/productos/botella-verde.jpg' },
+  { name: 'Tajalapiz Capibara', price: '$8.000', category: 'Papelería', image: '/productos/tajalapiz-capibara.jpg' },
+  { name: 'Calculadora Capibara', price: '$15.000', category: 'Papelería', image: '/productos/calculadora.jpg' },
 ]
 
 const categories: { name: Category; icon: string }[] = [
@@ -22,33 +53,25 @@ const categories: { name: Category; icon: string }[] = [
   { name: 'Sorpresas', icon: '🎁' },
   { name: 'Papelería', icon: '✏️' },
   { name: 'Accesorios', icon: '🎀' },
+  { name: 'Slime', icon: '🧽' },
 ]
 
-function ProductArt({ index, name }: { index: number; name: string }) {
-  const col = index % 4
-  const row = Math.floor(index / 4)
-  return (
-    <div
-      className="product-art"
-      role="img"
-      aria-label={`Ilustración de ${name}`}
-      style={{ backgroundPosition: `${(col / 3) * 100}% ${row * 100}%` }}
-    />
-  )
+function ProductArt({ image, name }: { image: string; name: string }) {
+  return <img className="product-art" src={image} alt={name} loading="lazy" />
 }
 
 function ProductCard({ product, list = false }: { product: Product; list?: boolean }) {
   return (
     <article className={`product-card${list ? ' product-card-list' : ''}`}>
       <div className="product-image-wrap">
-        <ProductArt index={product.art} name={product.name} />
+        <ProductArt image={product.image} name={product.name} />
         {product.badge && <span className="product-badge">{product.badge}</span>}
         <button className="heart-button" aria-label={`Guardar ${product.name} en favoritos`}><Heart size={17} /></button>
       </div>
       <div className="product-info">
         <span className="product-category">{product.category}</span>
         <h3>{product.name}</h3>
-        <div className="product-bottom"><strong>{product.price}</strong><button className="add-button" aria-label={`Agregar ${product.name} al carrito`}><ShoppingBag size={16} /></button></div>
+        <div className="product-bottom"><strong>{product.price}</strong><button className="add-button" aria-label={`Agregar ${product.name} al carrito`}><ShoppingBag size={16} /><span>Agregar</span></button></div>
       </div>
     </article>
   )
