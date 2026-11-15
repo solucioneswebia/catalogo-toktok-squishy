@@ -6,13 +6,11 @@ import { useCart } from './cart-context'
 import { WHATSAPP_NUMBER } from '@/lib/store-config'
 
 function formatPrice(amount: number) {
-  return `$${amount.toLocaleString('es-CO')}`
+  return `$${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
 }
 
-function CartItemArt({ art, image, name }: { art: number; image: string; name: string }) {
-  const column = art % 4
-  const row = Math.floor(art / 4)
-  return <div className="cart-item-art" role="img" aria-label={`Imagen de ${name}`} style={{ backgroundImage: `url(${image})`, backgroundPosition: `${(column / 3) * 100}% ${row * 100}%` }} />
+function CartItemArt({ image, name }: { image: string; name: string }) {
+  return <img className="cart-item-art" src={image} alt={name} />
 }
 
 type OrderDetails = { name: string; phone: string; address: string; delivery: string; city: string; notes: string }
@@ -42,7 +40,7 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
       '',
       'Quedo atento/a para confirmar mi pedido. 💛',
     ].join('\n')
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
+    return `https://wa.me/${3102306513}?text=${encodeURIComponent(message)}`
   }, [details, items, total])
 
   useEffect(() => {
@@ -72,7 +70,7 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
         {items.length ? <>
           <div className="cart-items">
             {items.map((item) => <article className="cart-item" key={item.id}>
-              <CartItemArt art={item.art} image={item.image} name={item.name} />
+              <CartItemArt image={item.image} name={item.name} />
               <div className="cart-item-content">
                 <div className="cart-item-title"><div><h3>{item.name}</h3><p>{formatPrice(item.price)} c/u</p></div><button className="remove-item" aria-label={`Eliminar ${item.name}`} onClick={() => removeFromCart(item.id)}><Trash2 size={16} /></button></div>
                 <div className="cart-item-bottom"><div className="quantity-control" aria-label={`Cantidad de ${item.name}`}><button aria-label={`Disminuir ${item.name}`} onClick={() => decreaseQuantity(item.id)}><Minus size={15} /></button><span aria-live="polite">{item.quantity}</span><button aria-label={`Aumentar ${item.name}`} onClick={() => increaseQuantity(item.id)}><Plus size={15} /></button></div><strong>Subtotal: {formatPrice(item.price * item.quantity)}</strong></div>

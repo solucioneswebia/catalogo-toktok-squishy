@@ -8,7 +8,7 @@ export type Product = {
   price: number
   image: string
   category: string
-  art: number
+  art?: number
   badge?: string
 }
 
