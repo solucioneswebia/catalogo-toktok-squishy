@@ -16,6 +16,7 @@ const products: Product[] = [
   { id: 'sorpresa-melody', name: 'Sorpresa Melody', price: 20000, image: '/productos/sorpresa-melody.jpg', category: 'Sorpresas', badge: 'Favorito' },
   { id: 'sorpresa-kuromi', name: 'Sorpresa Kuromi', price: 20000, image: '/productos/sorpresa-kuromi1.jpg', category: 'Sorpresas', badge: 'Favorito' },
   { id: 'sorpresa-pokemon', name: 'Sorpresa Pokemon', price: 20000, image: '/productos/sorpresa-pokemon.jpg', category: 'Sorpresas', badge: 'Favorito' },
+  { id: 'sorpresa-pokemon2', name: 'Sorpresa Pokemon Pikachu', price: 20000, image: '/productos/sorpresa-pokemon2.jpg', category: 'Sorpresas', badge: 'Favorito' },
   { id: 'caja-sorpresa-zootopia', name: 'Caja Sorpresa Disney Zootopia', price: 25000, image: '/productos/zootopia.jpg', category: 'Sorpresas', badge: 'Favorito' },
   { id: 'esfero-peluche-kuromi', name: 'Esfero de Peluche Kuromi', price: 12000, image: '/productos/esfero-peluche-kuromi.jpg', category: 'Papelería' },
   { id: 'esfero-peluche-capibara', name: 'Esfero de Peluche Capibara', price: 12000, image: '/productos/esfero-peluche-capibara.jpg', category: 'Papelería' },
@@ -27,7 +28,12 @@ const products: Product[] = [
   { id: 'slime-kuromi-rosa', name: 'Slime esponjoso Kuromi Rosa', price: 20000, image: '/productos/slime-kuromi.jpg', category: 'Slime' },
   { id: 'slime-kuromi-morado', name: 'Slime esponjoso Kuromi Morado', price: 20000, image: '/productos/slime-kuromi-morado.jpg', category: 'Slime' },
   { id: 'slime-cristal-verde', name: 'Slime antiestrés Verde Cristal', price: 20000, image: '/productos/slime-cristal-verde.jpg', category: 'Slime' },
+  { id: 'slime-cristal-azul', name: 'Slime antiestrés Azul Cristal', price: 20000, image: '/productos/slime-cristal-azul.jpg', category: 'Slime' },
+  { id: 'slime-cristal-morado', name: 'Slime antiestrés Galaxia', price: 20000, image: '/productos/slime-cristal-morado.jpg', category: 'Slime' },
+  { id: 'slime-cristal-rosado', name: 'Slime antiestrés Rosa Cristal', price: 20000, image: '/productos/slime-cristal-rosa.jpg', category: 'Slime' },
+  { id: 'slime-cristal-verde-azul', name: 'Slime Esponjoso Verde/Azul', price: 20000, image: '/productos/slime-cristal-verde-azul.jpg', category: 'Slime' },
   { id: 'slime-verde-morado', name: 'Slime esponjoso verde/morado', price: 20000, image: '/productos/slime-verde-morado.jpg', category: 'Slime' },
+  { id: 'slime-verde-rosa', name: 'Slime esponjoso verde/rosa', price: 20000, image: '/productos/slime-verde-rosa.jpg', category: 'Slime' },
   { id: 'slime-amarillo-rojo', name: 'Slime esponjoso amarillo/rojo', price: 20000, image: '/productos/slime-amarillo-rojo.jpg', category: 'Slime' },
   { id: 'slime-hello-kitty-amarillo', name: 'Slime Hello Kitty amarillo', price: 20000, image: '/productos/slime-amarillo.jpg', category: 'Slime' },
   { id: 'bote-slime-hk-azul', name: 'Bote Slime Hello Kitty azul/blanco', price: 22000, image: '/productos/bote-slime-hello-kitty.jpg', category: 'Slime' },
@@ -36,6 +42,12 @@ const products: Product[] = [
   { id: 'slime-dinosaurio-amarillo', name: 'Slime Dinosaurio Amarillo', price: 20000, image: '/productos/slime-dinosaurio-amarillo.jpg', category: 'Slime' },
   { id: 'slime-dinosaurio-rojo', name: 'Slime Dinosaurio Rojo', price: 20000, image: '/productos/slime-dinosaurio-rojo.jpg', category: 'Slime' },
   { id: 'slime-melody-rosa', name: 'Slime Melody Rosa', price: 20000, image: '/productos/slime-melody.jpg', category: 'Slime' },
+  { id: 'slime-cinnamoroll', name: 'Slime Cinnamoroll', price: 20000, image: '/productos/slime-cinnamoroll.jpg', category: 'Slime' },
+  { id: 'slime-hada-rosa', name: 'Slime Hada Rosa', price: 20000, image: '/productos/slime-hada-rosa.jpg', category: 'Slime' },
+  { id: 'slime-hada-morada', name: 'Slime Hada Morada', price: 20000, image: '/productos/slime-hada-morada.jpg', category: 'Slime' },
+  { id: 'slime-botella-roja', name: 'Slime Botella Roja', price: 20000, image: '/productos/slime-botella-roja.jpg', category: 'Slime' },
+  { id: 'slime-botella-verde', name: 'Slime Botella Verde', price: 20000, image: '/productos/slime-botella-verde.jpg', category: 'Slime' },
+  { id: 'slime-botella-azul', name: 'Slime Botella Azul', price: 20000, image: '/productos/slime-botella-azul.jpg', category: 'Slime' },
   { id: 'slime-blanco-morado', name: 'Slime esponjoso blanco/morado', price: 20000, image: '/productos/slime-morado-blanco.jpg', category: 'Slime' },
   { id: 'esfero-patita-rosa', name: 'Esfero Patita Gato Rosa', price: 6000, image: '/productos/esfero-rosa.jpg', category: 'Papelería' },
   { id: 'stikes-panda', name: 'Stikers Panda', price: 12000, image: '/productos/stiker-panda.jpg', category: 'Papelería' },
@@ -45,8 +57,11 @@ const products: Product[] = [
   { id: 'stiker-flor-azul', name: 'Stikers Flor Azul', price: 12000, image: '/productos/stiker-flor-azul.jpg', category: 'Papelería' },
   { id: 'cuaderno-stikes', name: 'Cuaderno Stikers', price: 17000, image: '/productos/cuaderno.jpg', category: 'Papelería' },
   { id: 'esfero-patita-amarillo', name: 'Esfero Patita Gato Amarillo', price: 6000, image: '/productos/esfero-amarillo.jpg', category: 'Papelería' },
-  { id: 'cajita-borradores', name: 'Cajita Borradores', price: 12000, image: '/productos/borradores.jpg', category: 'Papelería' },
-  { id: 'kit-borradores-capibara', name: 'Kit Borradores Capibara', price: 12000, image: '/productos/kit-borrador-capibara.jpg', category: 'Papelería' },
+  { id: 'cajita-borradores', name: 'Cajita Borradores Sirenita', price: 12000, image: '/productos/borradores.jpg', category: 'Papelería' },
+  { id: 'cajita-borradores2', name: 'Cajita Borradores Alien', price: 12000, image: '/productos/borradores2.jpg', category: 'Papelería' },
+  { id: 'kit-borradores-capibara-naranja', name: 'Kit Borradores Capibara Naranja', price: 12000, image: '/productos/kit-borrador-capibara.jpg', category: 'Papelería' },
+  { id: 'kit-borradores-capibara-amarillo', name: 'Kit Borradores Capibara Amarillo', price: 12000, image: '/productos/kit-borrador-capibara-amarillo.jpg', category: 'Papelería' },
+  { id: 'kit-borradores-capibara-verde', name: 'Kit Borradores Capibara Verde', price: 12000, image: '/productos/kit-borrador-capibara-verde.jpg', category: 'Papelería' },
   { id: 'resaltadores-gato', name: 'Kit Resaltadores Gato', price: 17000, image: '/productos/resaltadores-azul.jpg', category: 'Papelería' },
   { id: 'resaltadores-pulpo', name: 'Resaltadores Pulpo', price: 17000, image: '/productos/resaltador-pulpo.jpg', category: 'Papelería' },
   { id: 'kit-resaltadores-capibara', name: 'Kit Resaltadores Capibara', price: 17000, image: '/productos/kit-resaltadores.jpg', category: 'Papelería' },
@@ -55,6 +70,9 @@ const products: Product[] = [
   { id: 'borrador-botella-rojo', name: 'Borrador Botella Rojo', price: 12000, image: '/productos/botella-roja.jpg', category: 'Papelería' },
   { id: 'borrador-botella-verde', name: 'Borrador Botella Verde', price: 12000, image: '/productos/botella-verde.jpg', category: 'Papelería' },
   { id: 'borrador-botella-leche', name: 'Borrador Caja de Leche', price: 12000, image: '/productos/borrador-leche.jpg', category: 'Papelería' },
+  { id: 'borrador-botella-naranja2', name: 'Borrador Botella Naranja', price: 12000, image: '/productos/botella-naranja2.jpg', category: 'Papelería' },
+  { id: 'borrador-botella-morado', name: 'Borrador Botella Morada', price: 12000, image: '/productos/botella-morada.jpg', category: 'Papelería' },
+  { id: 'borrador-botella-sandia', name: 'Borrador Botella Sandía', price: 12000, image: '/productos/botella-rosa.jpg', category: 'Papelería' },
   { id: 'borrador-arcoiris', name: 'Borradores Arcoíris', price: 12000, image: '/productos/borradores-arcoiris.jpg', category: 'Papelería' },
   { id: 'borrador-luna', name: 'Borradores Luna', price: 12000, image: '/productos/borradores-luna.jpg', category: 'Papelería' },
   { id: 'borrador-captus', name: 'Borradores Captus', price: 12000, image: '/productos/borradores-captus.png', category: 'Papelería' },
@@ -126,7 +144,7 @@ export default function ProductCatalog() {
       </header>
 
       <section className="hero" id="inicio" aria-label="Bienvenida a Tok Tok Store">
-        <img className="hero-image" src="/Tok-Tok-Pet-Store-Template.png" alt="Describe aquí tu nueva imagen" />
+        <img className="hero-image" src="/Tok-Tok-Pet-Store-Template.jpg" alt="Describe aquí tu nueva imagen" />
       </section>
 
       <section className="catalog" aria-label="Catálogo de productos">
