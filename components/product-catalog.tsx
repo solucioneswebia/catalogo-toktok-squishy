@@ -1,11 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Grid2X2, List, Search, ShoppingBag, Heart, Sparkles, X } from 'lucide-react'
 import { useCart, type Product } from './cart-context'
 import CartDrawer from './cart-drawer'
 
-type Category = 'Squishy' | 'Sorpresas' | 'Papelería' | 'Manualidades' | 'Slime'
+type Category = 'Squishy' | 'Sorpresas' | 'Papelería' | 'Manualidades' | 'Slime' | 'Ropa'
 
 const products: Product[] = [
   { id: 'dumpling-squishy-pequeno', name: 'Dumpling Squishy Pequeño', price: 10000, image: '/productos/squishy-pequeno.jpg', category: 'Squishy', badge: 'Más vendido' },
@@ -80,6 +80,14 @@ const products: Product[] = [
   { id: 'borrador-ponny', name: 'Borradores Ponny', price: 12000, image: '/productos/borradores-ponny.jpg', category: 'Papelería' },
   { id: 'tajalapiz-capibara', name: 'Tajalapiz Capibara', price: 8000, image: '/productos/tajalapiz-capibara.jpg', category: 'Papelería' },
   { id: 'calculadora-capibara', name: 'Calculadora Capibara', price: 15000, image: '/productos/calculadora.jpg', category: 'Papelería' },
+  { id: 'bermuda-mocho', name: 'Bermuda Jean Mocho', price: 110000, image: '/productos/ropa/bermuda-modelo.jpeg', images: ['/productos/ropa/bermuda-jean.jpeg', '/productos/ropa/bermuda-modelo2.jpg','/productos/ropa/bermuda-modelo.jpeg'], sizes: ['S', 'M', 'L'], category: 'Ropa' },
+  { id: 'camisa-negra-rosa', name: 'Camiseta Negra Black Lettering Editorial Crewneck', price: 70000, image: '/productos/ropa/camisa-negra-rosa.jpeg', images: ['/productos/ropa/camisa-negra-rosa.jpg','/productos/ropa/camisa-negra-rosa.jpeg','/productos/ropa/detalles-negra-rosa.jpg'], sizes: ['S', 'M', 'L'], category: 'Ropa' },
+  { id: 'camisa-blanca-rosa', name: 'Camisa Blanca White Lettering Editorial Crewneck', price: 70000, image: '/productos/ropa/camisa-blanca-rosa-modelo.jpeg', images: ['/productos/ropa/camisa-blanca-rosa.jpg'], sizes: ['S', 'M', 'L'], category: 'Ropa' },
+  { id: 'camisa-negra-prada', name: 'Camisa Negra Blue Prada', price: 70000, image: '/productos/ropa/camisa-negra-prada.jpg', sizes: ['S', 'M', 'L'], category: 'Ropa' },
+  { id: 'camisa-blanca-prada', name: 'Camisa Blanca Blue Prada', price: 70000, image: '/productos/ropa/camisa-blanca-prada.jpg', sizes: ['S', 'M', 'L'], category: 'Ropa' },
+  { id: 'camiseta-negra-moncler', name: 'Camiseta Negra Moncler', price: 70000, image: '/productos/ropa/camiseta-negra-moncler.jpg', images: ['/productos/ropa/camisa-negra-moncler-modelo.jpg','/productos/ropa/camiseta-negra-moncler.jpg'], sizes: ['S', 'M', 'L'], category: 'Ropa' },
+  { id: 'cortavientos-marron', name: 'Chaqueta Corta Vientos Marrón Adidas', price: 110000, image: '/productos/ropa/cortaviento-marron-modelo.jpg', images: ['/productos/ropa/cortaviento-marron.jpg','/productos/ropa/cortaviento-marron-modelo.jpg'], sizes: ['S', 'M', 'L'], category: 'Ropa' },
+  { id: 'cortavientos-verde', name: 'Chaqueta Corta Vientos Verde Adidas', price: 110000, image: '/productos/ropa/cortaviento-verde-modelo.jpg', images: ['/productos/ropa/cortaviento-verde.jpg','/productos/ropa/cortaviento-verde-modelo.jpg'], sizes: ['S', 'M', 'L'], category: 'Ropa' },
 ]
 
 const categories: { name: Category; icon: string }[] = [
@@ -88,6 +96,7 @@ const categories: { name: Category; icon: string }[] = [
   { name: 'Papelería', icon: '✏️' },
   { name: 'Manualidades', icon: '🎀' },
   { name: 'Slime', icon: '🧽' },
+  { name: 'Ropa', icon: '👕' },
 ]
 
 function ProductArt({ image, name, onAdd }: { image: string; name: string; onAdd: () => void }) {
@@ -102,6 +111,63 @@ function formatPrice(amount: number) {
   return `$${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
 }
 
+function ProductModal({ product, onClose, onAdd }: { product: Product; onClose: () => void; onAdd: (product: Product, size?: string) => void }) {
+  const gallery = product.images?.length ? product.images : [product.image]
+  const [current, setCurrent] = useState(0)
+  const [size, setSize] = useState<string | null>(null)
+  const [error, setError] = useState(false)
+  const hasSizes = !!product.sizes?.length
+
+  useEffect(() => {
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => { document.body.style.overflow = previous; window.removeEventListener('keydown', onKey) }
+  }, [onClose])
+
+  const add = () => {
+    if (hasSizes && !size) { setError(true); return }
+    onAdd(product, size ?? undefined)
+    onClose()
+  }
+
+  return (
+    <div className="pm-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}>
+      <section className="pm-dialog" role="dialog" aria-modal="true" aria-label={product.name}>
+        <button className="pm-close" aria-label="Cerrar" onClick={onClose}><X size={20} /></button>
+        <div className="pm-gallery">
+          <img className="pm-main" src={gallery[current]} alt={`${product.name}, foto ${current + 1}`} />
+          {gallery.length > 1 && (
+            <div className="pm-thumbs">
+              {gallery.map((src, i) => (
+                <button key={src} className={i === current ? 'active' : ''} aria-label={`Ver foto ${i + 1}`} onClick={() => setCurrent(i)}><img src={src} alt="" /></button>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="pm-info">
+          <span className="product-category">{product.category}</span>
+          <h2>{product.name}</h2>
+          <strong className="pm-price">{formatPrice(product.price)}</strong>
+          {hasSizes && (
+            <>
+              <p className="pm-label">Tallas disponibles</p>
+              <div className="pm-sizes">
+                {product.sizes!.map((s) => (
+                  <button key={s} className={size === s ? 'active' : ''} aria-pressed={size === s} onClick={() => { setSize(s); setError(false) }}>{s}</button>
+                ))}
+              </div>
+              {error && <p className="pm-error">Elige una talla para continuar</p>}
+            </>
+          )}
+          <button className="pm-add" onClick={add}><ShoppingBag size={17} /> Agregar al carrito</button>
+        </div>
+      </section>
+    </div>
+  )
+}
+
 function ProductCard({ product, list = false, onAdd }: { product: Product; list?: boolean; onAdd: (product: Product) => void }) {
   return (
     <article className={`product-card${list ? ' product-card-list' : ''}`}>
@@ -113,7 +179,10 @@ function ProductCard({ product, list = false, onAdd }: { product: Product; list?
       <div className="product-info">
         <span className="product-category">{product.category}</span>
         <h3>{product.name}</h3>
-        <div className="product-bottom"><strong>{formatPrice(product.price)}</strong><button className="add-button" aria-label={`Agregar ${product.name} al carrito`} onClick={() => onAdd(product)}><ShoppingBag size={16} /><span>Agregar</span></button></div>
+        <div className="product-bottom"><strong>{formatPrice(product.price)}
+          </strong><button className="add-button" aria-label={`Agregar ${product.name} al carrito`} onClick={() => onAdd(product)}>
+            <ShoppingBag size={16} /><span>{product.sizes?.length ? 'Elegir talla' : 'Agregar'}</span>
+            </button></div>
       </div>
     </article>
   )
@@ -125,13 +194,19 @@ export default function ProductCatalog() {
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [cartOpen, setCartOpen] = useState(false)
   const [toast, setToast] = useState('')
+  const [selected, setSelected] = useState<Product | null>(null)
   const { addToCart, getCartItemsCount } = useCart()
   const cartCount = getCartItemsCount()
-  const addProduct = (product: Product) => {
-    addToCart(product)
-    setToast(`¡${product.name} agregado al carrito!`)
-    window.setTimeout(() => setToast(''), 2200)
+  const addProduct = (product: Product, size?: string) => {
+  const item = size ? { ...product, id: `${product.id}__${size}`, name: `${product.name} - Talla ${size}` } : product
+  addToCart(item)
+  setToast(`¡${item.name} agregado al carrito!`)
+  window.setTimeout(() => setToast(''), 2200)
   }
+  const handleAction = (product: Product) => {
+  if (product.sizes?.length || (product.images?.length ?? 0) > 1) setSelected(product)
+  else addProduct(product)
+}
   const visibleProducts = useMemo(() => products.filter((product) =>
     (category === 'Todos' || product.category === category) && product.name.toLocaleLowerCase('es').includes(query.trim().toLocaleLowerCase('es'))
   ), [category, query])
@@ -160,10 +235,11 @@ export default function ProductCatalog() {
           <button className={`category-chip all-chip${category === 'Todos' ? ' selected' : ''}`} onClick={() => setCategory('Todos')}>✨ Todos</button>
           {categories.map((item) => <button key={item.name} className={`category-chip${category === item.name ? ' selected' : ''}`} aria-pressed={category === item.name} onClick={() => setCategory(item.name)}><span aria-hidden="true">{item.icon}</span>{item.name}</button>)}
         </nav>
-        {visibleProducts.length > 0 ? <div className={`product-grid${view === 'list' ? ' list-view' : ''}`}>{visibleProducts.map((product) => <ProductCard key={product.id} product={product} list={view === 'list'} onAdd={addProduct} />)}</div> : <div className="empty-state"><span>🔎</span><h2>No encontramos ese tesorito</h2><p>Prueba con otro nombre o elige una categoría.</p><button onClick={() => { setQuery(''); setCategory('Todos') }}>Ver todos los productos</button></div>}
+        {visibleProducts.length > 0 ? <div className={`product-grid${view === 'list' ? ' list-view' : ''}`}>{visibleProducts.map((product) => <ProductCard key={product.id} product={product} list={view === 'list'} onAdd={handleAction} />)}</div> : <div className="empty-state"><span>🔎</span><h2>No encontramos ese tesorito</h2><p>Prueba con otro nombre o elige una categoría.</p><button onClick={() => { setQuery(''); setCategory('Todos') }}>Ver todos los productos</button></div>}
       </section>
       <footer className="store-footer"><span>Hecho con cariño para ti</span><span aria-hidden="true">♡</span><span>Tok Tok Store</span></footer>
       {toast && <div className="cart-toast" role="status">{toast} <span aria-hidden="true">🛒</span></div>}
+      {selected && <ProductModal product={selected} onClose={() => setSelected(null)} onAdd={addProduct} />}
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </main>
   )

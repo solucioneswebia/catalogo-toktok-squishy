@@ -10,6 +10,8 @@ export type Product = {
   category: string
   art?: number
   badge?: string
+  images?: string[]
+  sizes?: string[]
 }
 
 export type CartItem = Product & { quantity: number }
