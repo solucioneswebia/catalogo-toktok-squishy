@@ -12,6 +12,7 @@ export type Product = {
   badge?: string
   images?: string[]
   sizes?: string[]
+  stock?: number
 }
 
 export type CartItem = Product & { quantity: number }

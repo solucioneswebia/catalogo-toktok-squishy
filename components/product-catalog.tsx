@@ -4,10 +4,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { Grid2X2, List, Search, ShoppingBag, Heart, Sparkles, X } from 'lucide-react'
 import { useCart, type Product } from './cart-context'
 import CartDrawer from './cart-drawer'
+import { supabase } from '@/lib/supabase'
 
 type Category = 'Squishy' | 'Sorpresas' | 'Papelería' | 'Manualidades' | 'Slime' | 'Ropa'
 
-const products: Product[] = [
+const localProducts: Product[] = [
   { id: 'dumpling-squishy-pequeno', name: 'Dumpling Squishy Pequeño', price: 10000, image: '/productos/squishy-pequeno.jpg', category: 'Squishy', badge: 'Más vendido' },
   { id: 'dumpling-squishy-grande', name: 'Dumpling Squishy Grande', price: 20000, image: '/productos/squishy-grande.jpg', category: 'Squishy', badge: 'Más vendido' },
   { id: 'squishy-comida', name: 'Squishy Galletas Estrella', price: 20000, image: '/productos/squishy.jpg', category: 'Squishy'},
@@ -99,6 +100,23 @@ const categories: { name: Category; icon: string }[] = [
   { name: 'Ropa', icon: '👕' },
 ]
 
+type Row = {
+  id: string; name: string; price: number; category: string; image: string
+  images: string[] | null; sizes: string[] | null; badge: string | null; stock: number
+}
+
+const order = new Map(localProducts.map((p, i) => [p.id, i]))
+
+function fromRow(r: Row): Product {
+  return {
+    id: r.id, name: r.name, price: r.price, category: r.category, image: r.image,
+    images: r.images?.length ? r.images : undefined,
+    sizes: r.sizes?.length ? r.sizes : undefined,
+    badge: r.badge ?? undefined,
+    stock: r.stock,
+  }
+}
+
 function ProductArt({ image, name, onAdd }: { image: string; name: string; onAdd: () => void }) {
   return (
     <button type="button" className="product-art-btn" aria-label={`Agregar ${name} al carrito`} onClick={onAdd}>
@@ -169,20 +187,18 @@ function ProductModal({ product, onClose, onAdd }: { product: Product; onClose: 
 }
 
 function ProductCard({ product, list = false, onAdd }: { product: Product; list?: boolean; onAdd: (product: Product) => void }) {
+  const out = (product.stock ?? 1) <= 0
   return (
-    <article className={`product-card${list ? ' product-card-list' : ''}`}>
+    <article className={`product-card${list ? ' product-card-list' : ''}${out ? ' sold-out' : ''}`}>
       <div className="product-image-wrap">
-        <ProductArt image={product.image} name={product.name} onAdd={() => onAdd(product)} />
-        {product.badge && <span className="product-badge">{product.badge}</span>}
+        <ProductArt image={product.image} name={product.name} onAdd={() => { if (!out) onAdd(product) }} />
+        {out ? <span className="product-badge badge-soldout">Agotado</span> : product.badge && <span className="product-badge">{product.badge}</span>}
         <button className="heart-button" aria-label={`Guardar ${product.name} en favoritos`}><Heart size={17} /></button>
       </div>
       <div className="product-info">
         <span className="product-category">{product.category}</span>
         <h3>{product.name}</h3>
-        <div className="product-bottom"><strong>{formatPrice(product.price)}
-          </strong><button className="add-button" aria-label={`Agregar ${product.name} al carrito`} onClick={() => onAdd(product)}>
-            <ShoppingBag size={16} /><span>{product.sizes?.length ? 'Elegir talla' : 'Agregar'}</span>
-            </button></div>
+        <div className="product-bottom"><strong>{formatPrice(product.price)}</strong><button className="add-button" disabled={out} aria-label={`Agregar ${product.name} al carrito`} onClick={() => onAdd(product)}><ShoppingBag size={16} /><span>{out ? 'Agotado' : product.sizes?.length ? 'Elegir talla' : 'Agregar'}</span></button></div>
       </div>
     </article>
   )
@@ -190,6 +206,13 @@ function ProductCard({ product, list = false, onAdd }: { product: Product; list?
 
 export default function ProductCatalog() {
   const [query, setQuery] = useState('')
+  const [products, setProducts] = useState<Product[]>(localProducts)
+useEffect(() => {
+  supabase.from('products').select('*').eq('active', true).then(({ data, error }) => {
+    if (error || !data) return
+    setProducts((data as Row[]).map(fromRow).sort((a, b) => (order.get(a.id) ?? 9999) - (order.get(b.id) ?? 9999)))
+  })
+}, [])
   const [category, setCategory] = useState<Category | 'Todos'>('Todos')
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [cartOpen, setCartOpen] = useState(false)
@@ -207,9 +230,14 @@ export default function ProductCatalog() {
   if (product.sizes?.length || (product.images?.length ?? 0) > 1) setSelected(product)
   else addProduct(product)
 }
-  const visibleProducts = useMemo(() => products.filter((product) =>
+const isOut = (p: Product) => (p.stock ?? 1) <= 0
+const visibleProducts = useMemo(() => products
+  .filter((product) =>
     (category === 'Todos' || product.category === category) && product.name.toLocaleLowerCase('es').includes(query.trim().toLocaleLowerCase('es'))
-  ), [category, query])
+  )
+  .sort((a, b) => Number(isOut(a)) - Number(isOut(b))),
+[products, category, query])
+
 
   return (
     <main className="store-shell">
