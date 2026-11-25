@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { Grid2X2, List, Search, ShoppingBag, Heart, Sparkles, X } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Grid2X2, List, Search, ShoppingBag, ShoppingCart, Menu, Heart, Sparkles, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCart, type Product } from './cart-context'
 import CartDrawer from './cart-drawer'
 import { supabase } from '@/lib/supabase'
+
 
 type Category = 'Squishy' | 'Sorpresas' | 'Papelería' | 'Manualidades' | 'Slime' | 'Ropa'
 
@@ -179,7 +180,7 @@ function ProductModal({ product, onClose, onAdd }: { product: Product; onClose: 
               {error && <p className="pm-error">Elige una talla para continuar</p>}
             </>
           )}
-          <button className="pm-add" onClick={add}><ShoppingBag size={17} /> Agregar al carrito</button>
+          <button className="pm-add" onClick={add}><ShoppingCart size={17} /> Agregar al carrito</button>
         </div>
       </section>
     </div>
@@ -198,21 +199,64 @@ function ProductCard({ product, list = false, onAdd }: { product: Product; list?
       <div className="product-info">
         <span className="product-category">{product.category}</span>
         <h3>{product.name}</h3>
-        <div className="product-bottom"><strong>{formatPrice(product.price)}</strong><button className="add-button" disabled={out} aria-label={`Agregar ${product.name} al carrito`} onClick={() => onAdd(product)}><ShoppingBag size={16} /><span>{out ? 'Agotado' : product.sizes?.length ? 'Elegir talla' : 'Agregar'}</span></button></div>
+        <div className="product-bottom"><strong>{formatPrice(product.price)}</strong><button className="add-button" disabled={out} aria-label={`Agregar ${product.name} al carrito`} onClick={() => onAdd(product)}><ShoppingCart size={16} /><span>{out ? 'Agotado' : product.sizes?.length ? 'Elegir talla' : 'Agregar'}</span></button></div>
       </div>
     </article>
+  )
+}
+
+const slides = [
+  { src: '/carrusel/portada-1.jpeg', alt: 'Tok Tok Store en Navidad' },
+  { src: '/carrusel/portada-2.jpg', alt: 'Squishies y sorpresas' },
+  { src: '/carrusel/portada-3.jpg', alt: 'Papelería y slime kawaii' },
+]
+
+function HeroCarousel() {
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const touchX = useRef<number | null>(null)
+  const total = slides.length
+  const go = (n: number) => setIndex((n + total) % total)
+
+  useEffect(() => {
+    if (paused) return
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % total), 3000)
+    return () => window.clearInterval(id)
+  }, [paused, total])
+
+  return (
+    <section
+      className="hero full-bleed"
+      id="inicio"
+      aria-roledescription="carrusel"
+      aria-label="Fotos de Tok Tok Store"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={(e) => { touchX.current = e.touches[0].clientX }}
+      onTouchEnd={(e) => {
+        if (touchX.current === null) return
+        const diff = e.changedTouches[0].clientX - touchX.current
+        if (Math.abs(diff) > 40) go(index + (diff < 0 ? 1 : -1))
+        touchX.current = null
+      }}
+    >
+      {slides.map((s, i) => (
+        <img key={s.src} className={`hero-slide${i === index ? ' active' : ''}`} src={s.src} alt={s.alt} aria-hidden={i !== index} loading={i === 0 ? 'eager' : 'lazy'} />
+      ))}
+      <button className="hero-arrow hero-prev" aria-label="Foto anterior" onClick={() => go(index - 1)}><ChevronLeft size={20} /></button>
+      <button className="hero-arrow hero-next" aria-label="Foto siguiente" onClick={() => go(index + 1)}><ChevronRight size={20} /></button>
+      <div className="hero-dots">
+        {slides.map((s, i) => (
+          <button key={s.src} className={i === index ? 'active' : ''} aria-label={`Ir a la foto ${i + 1}`} onClick={() => go(i)} />
+        ))}
+      </div>
+    </section>
   )
 }
 
 export default function ProductCatalog() {
   const [query, setQuery] = useState('')
   const [products, setProducts] = useState<Product[]>(localProducts)
-useEffect(() => {
-  supabase.from('products').select('*').eq('active', true).then(({ data, error }) => {
-    if (error || !data) return
-    setProducts((data as Row[]).map(fromRow).sort((a, b) => (order.get(a.id) ?? 9999) - (order.get(b.id) ?? 9999)))
-  })
-}, [])
   const [category, setCategory] = useState<Category | 'Todos'>('Todos')
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [cartOpen, setCartOpen] = useState(false)
@@ -220,6 +264,13 @@ useEffect(() => {
   const [selected, setSelected] = useState<Product | null>(null)
   const { addToCart, getCartItemsCount } = useCart()
   const cartCount = getCartItemsCount()
+
+  useEffect(() => {
+    supabase.from('products').select('*').eq('active', true).then(({ data, error }) => {
+      if (error || !data) return
+      setProducts((data as Row[]).map(fromRow).sort((a, b) => (order.get(a.id) ?? 9999) - (order.get(b.id) ?? 9999)))
+    })
+  }, [])
   const addProduct = (product: Product, size?: string) => {
   const item = size ? { ...product, id: `${product.id}__${size}`, name: `${product.name} - Talla ${size}` } : product
   addToCart(item)
@@ -238,34 +289,67 @@ const visibleProducts = useMemo(() => products
   .sort((a, b) => Number(isOut(a)) - Number(isOut(b))),
 [products, category, query])
 
+const [menuOpen, setMenuOpen] = useState(false)
+const goTo = (c: Category | 'Todos') => {
+  setCategory(c)
+  setMenuOpen(false)
+  document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })
+}
+
 
   return (
     <main className="store-shell">
-      <header className="store-header">
-        <a className="brand" href="#inicio" aria-label="Tok Tok Store, inicio"><img className="brand-logo" src="/logo-sin-fondo.png" alt="Tok Tok Store" /></a>
-        <button className="header-cart" aria-label={`Abrir carrito, ${cartCount} productos`} onClick={() => setCartOpen(true)}><ShoppingBag size={19} /><span>Mi carrito</span>{cartCount > 0 && <span className="cart-count">{cartCount}</span>}</button>
+      <div className="xmas-top full-bleed">🎄 ¡Llegaron las sorpresas de Navidad! Descubre lo nuevo de la tienda</div>
+
+      <header className="xmas-nav full-bleed">
+        <div className="xmas-nav-inner">
+          <button className="xmas-menu" aria-label="Menú" aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)}>
+            {menuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+          <a href="#inicio" aria-label="Tok Tok Store, inicio"><img className="brand-logo" src="/logo-sin-fondo.png" alt="Tok Tok Store" /></a>
+          <button className="xmas-cart" aria-label={`Abrir carrito, ${cartCount} productos`} onClick={() => setCartOpen(true)}>
+            <ShoppingCart size={26} />
+            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+          </button>
+        </div>
+        {menuOpen && (
+          <nav className="xmas-dropdown" aria-label="Categorías">
+            <button onClick={() => goTo('Todos')}>✨ Todos</button>
+            {categories.map((c) => <button key={c.name} onClick={() => goTo(c.name)}>{c.icon} {c.name}</button>)}
+          </nav>
+        )}
       </header>
 
-      <section className="hero" id="inicio" aria-label="Bienvenida a Tok Tok Store">
-        <img className="hero-image" src="/Tok-Tok-Pet-Store-Template.jpg" alt="Describe aquí tu nueva imagen" />
-      </section>
+      <HeroCarousel />
 
-      <section className="catalog" aria-label="Catálogo de productos">
-        <div className="discovery-row"><div><span className="eyebrow"><Sparkles size={14} /> TU PRÓXIMO FAVORITO</span><h1>Descubre tus favoritos</h1><p>Pequeñas cosas que hacen la vida más grande.</p></div><span className="count-pill">{visibleProducts.length} tesoros</span></div>
-        <div className="search-row">
-          <label className="search-box"><Search size={19} aria-hidden="true" /><span className="sr-only">Buscar producto</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar producto..." />{query && <button className="clear-search" aria-label="Limpiar búsqueda" onClick={() => setQuery('')}><X size={16} /></button>}</label>
-          <div className="view-toggle" role="group" aria-label="Vista del catálogo">
-            <button className={view === 'grid' ? 'active' : ''} aria-label="Vista en cuadros" aria-pressed={view === 'grid'} onClick={() => setView('grid')}><Grid2X2 size={18} /></button>
-            <button className={view === 'list' ? 'active' : ''} aria-label="Vista en filas" aria-pressed={view === 'list'} onClick={() => setView('list')}><List size={19} /></button>
-          </div>
+      <div className="xmas-marquee full-bleed" aria-label="Felices fiestas de Tok Tok Store">
+        <div className="marquee-track">
+          {[0, 1].map((g) => (
+            <div className="marquee-group" key={g} aria-hidden={g === 1}>
+              {Array.from({ length: 4 }).map((_, i) => <span key={i}>HAPPY TOK TOK HOLIDAYS!! 🎄🎄🎄</span>)}
+            </div>
+          ))}
         </div>
-        <nav className="category-scroll" aria-label="Filtrar por categoría">
-          <button className={`category-chip all-chip${category === 'Todos' ? ' selected' : ''}`} onClick={() => setCategory('Todos')}>✨ Todos</button>
-          {categories.map((item) => <button key={item.name} className={`category-chip${category === item.name ? ' selected' : ''}`} aria-pressed={category === item.name} onClick={() => setCategory(item.name)}><span aria-hidden="true">{item.icon}</span>{item.name}</button>)}
-        </nav>
-        {visibleProducts.length > 0 ? <div className={`product-grid${view === 'list' ? ' list-view' : ''}`}>{visibleProducts.map((product) => <ProductCard key={product.id} product={product} list={view === 'list'} onAdd={handleAction} />)}</div> : <div className="empty-state"><span>🔎</span><h2>No encontramos ese tesorito</h2><p>Prueba con otro nombre o elige una categoría.</p><button onClick={() => { setQuery(''); setCategory('Todos') }}>Ver todos los productos</button></div>}
-      </section>
-      <footer className="store-footer"><span>Hecho con cariño para ti</span><span aria-hidden="true">♡</span><span>Tok Tok Store</span></footer>
+      </div>
+
+      <div className="xmas-green full-bleed">
+        <section className="catalog" id="catalogo" aria-label="Catálogo de productos">
+          <div className="search-row">
+            <label className="search-box"><Search size={19} aria-hidden="true" /><span className="sr-only">Buscar producto</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar producto..." />{query && <button className="clear-search" aria-label="Limpiar búsqueda" onClick={() => setQuery('')}><X size={16} /></button>}</label>
+            <div className="view-toggle" role="group" aria-label="Vista del catálogo">
+              <button className={view === 'grid' ? 'active' : ''} aria-label="Vista en cuadros" aria-pressed={view === 'grid'} onClick={() => setView('grid')}><Grid2X2 size={18} /></button>
+              <button className={view === 'list' ? 'active' : ''} aria-label="Vista en filas" aria-pressed={view === 'list'} onClick={() => setView('list')}><List size={19} /></button>
+            </div>
+          </div>
+          <nav className="category-scroll" aria-label="Filtrar por categoría">
+            <button className={`category-chip all-chip${category === 'Todos' ? ' selected' : ''}`} onClick={() => setCategory('Todos')}>✨ Todos</button>
+            {categories.map((item) => <button key={item.name} className={`category-chip${category === item.name ? ' selected' : ''}`} aria-pressed={category === item.name} onClick={() => setCategory(item.name)}><span aria-hidden="true">{item.icon}</span>{item.name}</button>)}
+          </nav>
+          {visibleProducts.length > 0 ? <div className={`product-grid${view === 'list' ? ' list-view' : ''}`}>{visibleProducts.map((product) => <ProductCard key={product.id} product={product} list={view === 'list'} onAdd={handleAction} />)}</div> : <div className="empty-state"><span>🔎</span><h2>No encontramos ese tesorito</h2><p>Prueba con otro nombre o elige una categoría.</p><button onClick={() => { setQuery(''); setCategory('Todos') }}>Ver todos los productos</button></div>}
+        </section>
+        <footer className="store-footer"><span>Hecho con cariño para ti</span><span aria-hidden="true">♡</span><span>Tok Tok Store</span></footer>
+      </div>
+
       {toast && <div className="cart-toast" role="status">{toast} <span aria-hidden="true">🛒</span></div>}
       {selected && <ProductModal product={selected} onClose={() => setSelected(null)} onAdd={addProduct} />}
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />

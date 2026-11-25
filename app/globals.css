@@ -52,10 +52,40 @@ button { color: inherit; }
 .header-note { margin: 6px 0 0; color: #806d5e; font-size: 11px; letter-spacing: .1px; }
 .header-note span { color: #d77a83; font-size: 15px; margin-left: 2px; }
 .hero { position: relative; height: 176px; overflow: hidden; border-radius: 23px; background: #fff1c9; box-shadow: 0 6px 22px #5a38270d; }
-.hero-image { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 14%; }
-.hero-caption { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 29px; display: flex; justify-content: center; align-items: center; gap: 7px; color: #5a3827; font-size: 12px; font-weight: 800; border-radius: 20px; background: #fffdf2e8; backdrop-filter: blur(5px); }
-.caption-icon { color: #e6a900; }.caption-heart { color: #d87585; font-size: 18px; }
-.catalog { padding: 25px 1px 0; }
+body { overflow-x: clip; }
+.full-bleed { width: 100vw; margin-left: calc(50% - 50vw); }
+
+.xmas-top { background: #c8202a; color: #fff; text-align: center; padding: 9px 14px; font-size: 12px; font-weight: 800; letter-spacing: .6px; }
+
+.xmas-nav { position: sticky; top: 0; z-index: 30; background: #2a8f0f; border-bottom: 0; box-shadow: none; }
+.xmas-nav-inner { max-width: 1120px; margin: 0 auto; padding: 8px 18px; display: flex; align-items: center; justify-content: center; position: relative; }
+.xmas-nav .brand-logo { height: 56px; width: auto; display: block; }
+.xmas-cart { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: transparent; color: #fff; cursor: pointer; }
+.cart-count { position: absolute; top: 2px; right: 0; min-width: 18px; height: 18px; padding: 0 5px; display: grid; place-items: center; border-radius: 9px; background: #f4c51f; color: #24170d; font-size: 11px; font-weight: 900; }
+
+.hero { position: relative; height: 176px; overflow: hidden; border-radius: 23px; background: #fff1c9; margin-top: 16px; border: 4px solid #c8202a; }
+.hero-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity .7s ease; }
+.hero-slide.active { opacity: 1; }
+.hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 50%; background: #ffffffd9; color: #5a3827; cursor: pointer; z-index: 2; }
+.hero-prev { left: 10px; }
+.hero-next { right: 10px; }
+.hero-dots { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 7px; z-index: 2; }
+.hero-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: #ffffffa6; cursor: pointer; transition: width .25s, background .25s; }
+.hero-dots button.active { width: 22px; border-radius: 8px; background: #f4c51f; }
+@media (min-width: 640px) { .hero { height: 230px; } }
+@media (min-width: 900px) { .hero { height: 290px; } }
+
+.xmas-marquee { margin: 16px 0 0; background: #c8202a; border-block: 4px solid #fff; overflow: hidden; padding: 10px 0; }
+.marquee-track { display: flex; width: max-content; animation: marquee 22s linear infinite; }
+.marquee-group { display: flex; flex: 0 0 auto; }
+.marquee-group span { padding: 0 28px; color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 2px; white-space: nowrap; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+.category-chip.selected { background: #c8202a; border-color: #c8202a; color: #fff; }
+.view-toggle button.active { background: #2a8f0f; color: #fff; }
+.add-button { background: #c8202a; color: #fff; }
+.add-button:disabled { background: #e6e0d6; color: #9a8d80; }catalog { padding: 25px 1px 0; }
 .discovery-row { display: flex; align-items: end; justify-content: space-between; gap: 8px; margin-bottom: 17px; }
 .eyebrow { display: flex; align-items: center; gap: 5px; color: #886447; font-size: 9px; font-weight: 900; letter-spacing: 1.1px; }
 .eyebrow svg { color: #e5ac00; }
@@ -233,3 +263,57 @@ h1 { margin: 6px 0 4px; font-size: clamp(22px, 6vw, 31px); line-height: 1.12; le
 .day-group { margin-bottom: 14px; }
 .day-head { display: flex; justify-content: space-between; margin: 0 0 8px; padding: 0 4px; font-size: 13px; text-transform: capitalize; color: #5a3827; }
 .ad-danger { height: 44px; padding: 0 14px; margin-right: auto; border: 1px solid #f0c6c2; border-radius: 12px; background: #fff; color: #b3261e; font-weight: 800; cursor: pointer; }
+.hero { position: relative; height: 176px; overflow: hidden; border-radius: 23px; background: #fff1c9; }
+.hero-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity .7s ease; }
+.hero-slide.active { opacity: 1; }
+.hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 50%; background: #ffffffd9; color: #5a3827; cursor: pointer; z-index: 2; }
+.hero-prev { left: 10px; }
+.hero-next { right: 10px; }
+.hero-dots { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 7px; z-index: 2; }
+.hero-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: #ffffffa6; cursor: pointer; transition: width .25s, background .25s; }
+.hero-dots button.active { width: 22px; border-radius: 8px; background: #f4c51f; }
+@media (min-width: 640px) { .hero { height: 230px; } }
+@media (min-width: 900px) { .hero { height: 290px; } }
+
+.store-shell { max-width: none; padding: 0 0 24px; }
+.full-bleed { width: 100%; margin-left: 0; }
+.hero { height: 220px; }
+.catalog, .store-footer { max-width: 1120px; margin-left: auto; margin-right: auto; padding-left: 18px; padding-right: 18px; }
+@media (min-width: 640px) { .catalog, .store-footer { padding-left: 28px; padding-right: 28px; } .hero { margin: 16px 28px 0; } }
+@media (min-width: 900px) { .catalog, .store-footer { padding-left: 36px; padding-right: 36px; } }
+
+.xmas-nav-inner { padding: 6px 18px; }
+.xmas-nav .brand-logo { height: 72px; width: auto; display: block; background: none; padding: 0; margin: 0; object-fit: contain; filter: drop-shadow(0 2px 4px #0006); }
+@media (min-width: 640px) { .xmas-nav .brand-logo { height: 90px; } }
+/* Anuncio */
+.xmas-top { background: #c8202a; color: #111; text-align: center; padding: 8px 12px; font-size: 11px; font-weight: 900; letter-spacing: .3px; text-transform: uppercase; }
+
+/* Menú amarillo */
+.xmas-nav { position: sticky; top: 0; z-index: 30; background: #f4c51f; border: 0; box-shadow: none; }
+.xmas-nav-inner { max-width: none; padding: 6px 16px; }
+.xmas-menu { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: transparent; color: #24170d; cursor: pointer; }
+.xmas-cart { color: #24170d; right: 14px; }
+.cart-count { background: #c8202a; color: #fff; }
+.xmas-dropdown { position: absolute; top: 100%; left: 0; right: 0; display: grid; background: #fff; box-shadow: 0 10px 24px #0003; }
+.xmas-dropdown button { padding: 14px 20px; border: 0; border-bottom: 1px solid #f0ebe3; background: #fff; text-align: left; font-weight: 800; color: #33271f; cursor: pointer; }
+
+/* Carrusel con marco blanco */
+.hero { position: relative; height: auto; aspect-ratio: 3 / 2; margin: 0; border: 0; border-radius: 0; background: #fff; box-shadow: none; overflow: hidden; }
+.hero-slide { inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); object-fit: contain; }
+@media (min-width: 700px) { .hero { aspect-ratio: auto; height: 440px; } }
+
+/* Franja pegada al carrusel */
+.xmas-marquee { margin: 0; }
+
+/* Zona verde con luces */
+.xmas-green { background: #176f2b; padding-top: 52px; position: relative; }
+.xmas-green::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 48px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='48'%3E%3Cpath d='M0 6Q25 40 50 6Q75 40 100 6Q125 40 150 6Q175 40 200 6' stroke='%23111' stroke-width='2' fill='none'/%3E%3Cg%3E%3Crect x='22' y='20' width='6' height='5' fill='%23555'/%3E%3Cellipse cx='25' cy='31' rx='5' ry='8' fill='%23e8202a'/%3E%3Crect x='72' y='20' width='6' height='5' fill='%23555'/%3E%3Cellipse cx='75' cy='31' rx='5' ry='8' fill='%23ffd21f'/%3E%3Crect x='122' y='20' width='6' height='5' fill='%23555'/%3E%3Cellipse cx='125' cy='31' rx='5' ry='8' fill='%233aa0ff'/%3E%3Crect x='172' y='20' width='6' height='5' fill='%23555'/%3E%3Cellipse cx='175' cy='31' rx='5' ry='8' fill='%2342d65a'/%3E%3C/g%3E%3C/svg%3E") repeat-x top left;
+}
+.xmas-green .catalog { padding-top: 0; }
+.xmas-green .discovery-row h1, .xmas-green .discovery-row p, .xmas-green .eyebrow { color: #fff; }
+.xmas-green .store-footer { color: #fff; }
+.xmas-nav-inner { padding: 4px 16px; }
+.xmas-nav .brand-logo { height: 84px; width: auto; display: block; background: none; padding: 0; margin: 0; object-fit: contain; filter: none; box-shadow: none; }
+@media (min-width: 670px) { .xmas-nav .brand-logo { height: 100px; } }
