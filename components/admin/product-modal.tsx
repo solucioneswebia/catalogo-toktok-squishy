@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { type Row, errMsg } from './shared'
 
-const CATEGORIES = ['Squishy', 'Sorpresas', 'Papelería', 'Manualidades', 'Slime', 'Ropa']
+const CATEGORIES = ['Squishy', 'Sorpresas', 'Papelería', 'Manualidades', 'Slime', 'Ropa', 'Tarjetas regalo']
 
 type Full = Row & { images: string[] | null; sizes: string[] | null; badge: string | null }
 

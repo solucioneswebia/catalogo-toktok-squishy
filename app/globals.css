@@ -317,3 +317,11 @@ h1 { margin: 6px 0 4px; font-size: clamp(22px, 6vw, 31px); line-height: 1.12; le
 .xmas-nav-inner { padding: 4px 16px; }
 .xmas-nav .brand-logo { height: 84px; width: auto; display: block; background: none; padding: 0; margin: 0; object-fit: contain; filter: none; box-shadow: none; }
 @media (min-width: 670px) { .xmas-nav .brand-logo { height: 100px; } }
+.hero-item { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .7s ease; }
+.hero-item.active { opacity: 1; pointer-events: auto; }
+.hero-item .hero-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; }
+.hero-overlay { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); width: min(86%, 460px); padding: 18px 20px; border-radius: 18px; background: rgba(0, 0, 0, 0.45); color: #fff; text-align: center; display: grid; gap: 8px; justify-items: center; }
+.hero-overlay h2 { margin: 0; font-size: 20px; line-height: 1.2; }
+.hero-overlay p { margin: 0; font-size: 13px; opacity: .92; }
+.hero-overlay button { margin-top: 4px; padding: 10px 22px; border: 0; border-radius: 999px; background: #f4c51f; color: #24170d; font-weight: 900; font-size: 13px; cursor: pointer; }
+@media (min-width: 700px) { .hero-overlay h2 { font-size: 28px; } .hero-overlay p { font-size: 15px; } }

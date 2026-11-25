@@ -7,7 +7,7 @@ import CartDrawer from './cart-drawer'
 import { supabase } from '@/lib/supabase'
 
 
-type Category = 'Squishy' | 'Sorpresas' | 'Papelería' | 'Manualidades' | 'Slime' | 'Ropa'
+type Category = 'Squishy' | 'Sorpresas' | 'Papelería' | 'Manualidades' | 'Slime' | 'Ropa' | 'Tarjetas regalo'
 
 const localProducts: Product[] = [
   { id: 'dumpling-squishy-pequeno', name: 'Dumpling Squishy Pequeño', price: 10000, image: '/productos/squishy-pequeno.jpg', category: 'Squishy', badge: 'Más vendido' },
@@ -99,6 +99,7 @@ const categories: { name: Category; icon: string }[] = [
   { name: 'Manualidades', icon: '🎀' },
   { name: 'Slime', icon: '🧽' },
   { name: 'Ropa', icon: '👕' },
+    { name: 'Tarjetas regalo', icon: '💳' },
 ]
 
 type Row = {
@@ -205,13 +206,29 @@ function ProductCard({ product, list = false, onAdd }: { product: Product; list?
   )
 }
 
-const slides = [
-  { src: '/carrusel/portada-1.jpeg', alt: 'Tok Tok Store en Navidad' },
-  { src: '/carrusel/portada-2.jpg', alt: 'Squishies y sorpresas' },
-  { src: '/carrusel/portada-3.jpg', alt: 'Papelería y slime kawaii' },
+const slides: { src: string; alt: string; title: string; text: string; button: string; target: Category | 'Todos' }[] = [
+  {
+    src: '/carrusel/portada-1.jpeg', alt: 'Edición limitada navideña',
+    title: 'Edición limitada navideña',
+    text: 'Elige tus favoritos y arma tu caja de regalos a un precio especial.',
+    button: 'Hacer pedido', target: 'Todos',
+  },
+  {
+    src: '/carrusel/portada-2.jpg', alt: 'Tarjetas de regalo Tok Tok',
+    title: '¿No sabes qué regalar?',
+    text: 'Regala lo mejor, regala Tok Tok. Tarjetas de regalo.',
+    button: 'Hacer pedido', target: 'Tarjetas regalo',
+  },
+  {
+    src: '/carrusel/portada-3.jpg', alt: 'Sección de ropa',
+    title: 'Descubre nuestra sección de ropa',
+    text: 'Camisetas, bermudas y chaquetas con mucho estilo.',
+    button: 'Hacer pedido', target: 'Ropa',
+  },
 ]
 
-function HeroCarousel() {
+
+function HeroCarousel({ onNavigate }: { onNavigate: (c: Category | 'Todos') => void }) {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const touchX = useRef<number | null>(null)
@@ -220,16 +237,17 @@ function HeroCarousel() {
 
   useEffect(() => {
     if (paused) return
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % total), 3000)
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % total), 4000)
     return () => window.clearInterval(id)
   }, [paused, total])
+
 
   return (
     <section
       className="hero full-bleed"
       id="inicio"
       aria-roledescription="carrusel"
-      aria-label="Fotos de Tok Tok Store"
+      aria-label="Novedades de Tok Tok Store"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={(e) => { touchX.current = e.touches[0].clientX }}
@@ -241,13 +259,20 @@ function HeroCarousel() {
       }}
     >
       {slides.map((s, i) => (
-        <img key={s.src} className={`hero-slide${i === index ? ' active' : ''}`} src={s.src} alt={s.alt} aria-hidden={i !== index} loading={i === 0 ? 'eager' : 'lazy'} />
+        <div key={s.src} className={`hero-item${i === index ? ' active' : ''}`} aria-hidden={i !== index}>
+          <img className="hero-slide" src={s.src} alt={s.alt} loading={i === 0 ? 'eager' : 'lazy'} />
+          <div className="hero-overlay">
+            <h2>{s.title}</h2>
+            <p>{s.text}</p>
+            <button tabIndex={i === index ? 0 : -1} onClick={() => onNavigate(s.target)}>{s.button}</button>
+          </div>
+        </div>
       ))}
-      <button className="hero-arrow hero-prev" aria-label="Foto anterior" onClick={() => go(index - 1)}><ChevronLeft size={20} /></button>
-      <button className="hero-arrow hero-next" aria-label="Foto siguiente" onClick={() => go(index + 1)}><ChevronRight size={20} /></button>
+      <button className="hero-arrow hero-prev" aria-label="Anterior" onClick={() => go(index - 1)}><ChevronLeft size={20} /></button>
+      <button className="hero-arrow hero-next" aria-label="Siguiente" onClick={() => go(index + 1)}><ChevronRight size={20} /></button>
       <div className="hero-dots">
         {slides.map((s, i) => (
-          <button key={s.src} className={i === index ? 'active' : ''} aria-label={`Ir a la foto ${i + 1}`} onClick={() => go(i)} />
+          <button key={s.src} className={i === index ? 'active' : ''} aria-label={`Ir a la imagen ${i + 1}`} onClick={() => go(i)} />
         ))}
       </div>
     </section>
@@ -320,7 +345,7 @@ const goTo = (c: Category | 'Todos') => {
         )}
       </header>
 
-      <HeroCarousel />
+      <HeroCarousel onNavigate={goTo} />
 
       <div className="xmas-marquee full-bleed" aria-label="Felices fiestas de Tok Tok Store">
         <div className="marquee-track">
